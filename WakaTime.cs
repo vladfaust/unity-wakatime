@@ -28,19 +28,19 @@ namespace WakaTime {
       LinkCallbacks();
     }
 
-    public struct Response<T> {
+    struct Response<T> {
       public string error;
       public T data;
     }
 
-    public struct HeartbeatResponse {
+    struct HeartbeatResponse {
       public string id;
       public string entity;
       public string type;
       public float time;
     }
 
-    public struct Heartbeat {
+    struct Heartbeat {
       public string entity;
       public string type;
       public float time;

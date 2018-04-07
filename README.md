@@ -8,6 +8,7 @@ Existing solutions (neither https://github.com/josec89/wakatime-unity nor https:
 The code has been successfuly tested with following Unity versions:
 
 * 2017.4.0f1
+* 2018.1.0b13 (although getting `'UnityEditor.EditorApplication.hierarchyWindowChanged' is obsolete: Use 'EditorApplication.hierarchyChanged'` warning)
 
 ## Installation
 

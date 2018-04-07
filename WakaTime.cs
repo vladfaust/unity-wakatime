@@ -72,8 +72,10 @@ namespace WakaTime {
 
       var heartbeat = new Heartbeat(file, fromSave);
       if ((heartbeat.time - lastHeartbeat.time < HEARTBEAT_COOLDOWN) && !fromSave && (heartbeat.entity == lastHeartbeat.entity)) {
+        if (isDebug) Debug.Log("<WakaTime> Skip this heartbeat");
         return;
       }
+
       var heartbeatJSON = JsonUtility.ToJson(heartbeat);
 
       var request = UnityWebRequest.Post(URL_PREFIX + "users/current/heartbeats?api_key=" + apiKey, string.Empty);
@@ -82,10 +84,15 @@ namespace WakaTime {
       request.SetRequestHeader("Content-Type", "application/json");
 
       request.SendWebRequest().completed += (operation) => {
+        if (isDebug) Debug.Log("<WakaTime> Got response\n" + request.downloadHandler.text);
         var response = JsonUtility.FromJson<Response<HeartbeatResponse>>(request.downloadHandler.text);
 
         if (response.error != null) {
-          Debug.LogError("<WakaTime> Failed to send heartbeat to WakaTime:\n" + response.error);
+          if (response.error == "Duplicate") {
+            if (isDebug) Debug.LogWarning("<WakaTime> Duplicate heartbeat");
+          } else {
+            Debug.LogError("<WakaTime> Failed to send heartbeat to WakaTime!\n" + response.error);
+          }
         } else {
           if (isDebug) Debug.Log("<WakaTime> Sent heartbeat!");
           lastHeartbeat = response.data;

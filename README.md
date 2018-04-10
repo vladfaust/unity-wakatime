@@ -12,8 +12,8 @@ The code has been successfuly tested with following Unity versions:
 
 ## Installation
 
-1. Copy `WakaTime.cs` somewhere into your project (maybe `Plugins/WakaTime/Editor/WakaTime.cs`)
-2. Edit `apiKey` variable within the script (grab from https://wakatime.com/settings/account)
+1. Copy `Plugins` folder into your project
+2. Edit `apiKey` variable within `Plugins/WakaTime/Editor/Plugin.cs` (grab from https://wakatime.com/settings/account)
 3. (optional) Set `isDebug` variable to `false` to disable logging
 4. Check if `"Unity"` editor appears at https://wakatime.com/api/v1/users/current/user_agents
 5. Enjoy!

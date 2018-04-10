@@ -13,7 +13,7 @@ using System.Net;
 
 namespace WakaTime {
   [InitializeOnLoad]
-  public static class Wakatime {
+  public static class Plugin {
     static string apiKey = "<ENTER YOUR API KEY HERE>"; // This
     static bool isDebug = true; // Set to false to disabled debugging
 
@@ -22,7 +22,7 @@ namespace WakaTime {
 
     static HeartbeatResponse lastHeartbeat;
 
-    static Wakatime() {
+    static Plugin() {
       if (isDebug) Debug.Log("<WakaTime> Initializing...");
       SendHeartbeat();
       LinkCallbacks();

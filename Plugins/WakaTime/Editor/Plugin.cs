@@ -9,21 +9,35 @@ using UnityEditor.SceneManagement;
 using System.Net;
 
 // Heavily inspired by https://github.com/bengsfort/WakaTime-Unity
-// Do not forget to set apiKey and disable isDebug
 
 namespace WakaTime {
   [InitializeOnLoad]
-  public static class Plugin {
-    static string apiKey = "<ENTER YOUR API KEY HERE>"; // This
-    static bool isDebug = true; // Set to false to disabled debugging
+  public class Plugin {
+    static string apiKey = "";
+    static bool isDebug = false;
 
     const string URL_PREFIX = "https://wakatime.com/api/v1/";
     const int HEARTBEAT_COOLDOWN = 120;
+    public const string PREFS_PATH = "WakaTime API Key";
 
     static HeartbeatResponse lastHeartbeat;
 
     static Plugin() {
+      Initialize();
+    }
+
+    public static void Initialize() {
+      if (EditorPrefs.HasKey(PREFS_PATH)) {
+        apiKey = EditorPrefs.GetString(PREFS_PATH);
+      }
+
+      if (apiKey == string.Empty) {
+        Debug.LogWarning("<WakaTime> API key is not set, skipping initialization...");
+        return;
+      }
+
       if (isDebug) Debug.Log("<WakaTime> Initializing...");
+
       SendHeartbeat();
       LinkCallbacks();
     }
@@ -102,8 +116,7 @@ namespace WakaTime {
 
     [DidReloadScripts()]
     static void OnScriptReload() {
-      SendHeartbeat();
-      LinkCallbacks(true);
+      Initialize();
     }
 
     static void OnPlaymodeStateChanged(PlayModeStateChange change) {

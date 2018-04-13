@@ -15,9 +15,10 @@ The code has been successfuly tested with following Unity versions:
 ## Installation
 
 1. Copy `Plugins` folder into your project Assets
-2. Go to `Window/WakaTime` in Editor and set API key (grab one from https://wakatime.com/settings/account)
-3. Check if `"Unity"` editor appears at https://wakatime.com/api/v1/users/current/user_agents (may be a bit delayed)
-4. Enjoy!
+2. Go to `Window/WakaTime` in the Editor and insert your API key (grab one from https://wakatime.com/settings/account)
+3. Press `Save Preferences`
+4. Check if `"Unity"` editor appears at https://wakatime.com/api/v1/users/current/user_agents (may be a bit delayed)
+5. Enjoy!
 
 ## Usage
 

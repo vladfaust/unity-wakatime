@@ -1,6 +1,8 @@
 # unity-wakatime
 A [WakaTime](https://wakatime.com) plugin for [Unity](https://unity.com).
 
+![Screenshot](https://user-images.githubusercontent.com/7955682/38732057-79cf45b4-3f25-11e8-958f-07ba5290caba.PNG)
+
 ## About
 
 Existing solutions (neither https://github.com/josec89/wakatime-unity nor https://github.com/bengsfort/WakaTime-Unity) didn't work for me, so I decided to implement my own variant.

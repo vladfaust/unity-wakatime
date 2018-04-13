@@ -13,13 +13,13 @@ using System.Net;
 namespace WakaTime {
   [InitializeOnLoad]
   public class Plugin {
-    private static bool _isDebug = false;
-
     public const string API_KEY_PREF = "WakaTime/APIKey";
     public const string ENABLED_PREF = "WakaTime/Enabled";
+    public const string DEBUG_PREF = "WakaTime/Debug";
 
     private static string _apiKey = "";
     private static bool _enabled = true;
+    private static bool _debug = true;
 
     private const string URL_PREFIX = "https://wakatime.com/api/v1/";
     private const int HEARTBEAT_COOLDOWN = 120;
@@ -34,8 +34,11 @@ namespace WakaTime {
       if (EditorPrefs.HasKey(ENABLED_PREF))
         _enabled = EditorPrefs.GetBool(ENABLED_PREF);
 
+      if (EditorPrefs.HasKey(DEBUG_PREF))
+        _debug = EditorPrefs.GetBool(DEBUG_PREF);
+
       if (!_enabled) {
-        if (_isDebug) Debug.Log("<WakaTime> Explicitly disabled, skipping initialization...");
+        if (_debug) Debug.Log("<WakaTime> Explicitly disabled, skipping initialization...");
         return;
       }
 
@@ -48,7 +51,7 @@ namespace WakaTime {
         return;
       }
 
-      if (_isDebug) Debug.Log("<WakaTime> Initializing...");
+      if (_debug) Debug.Log("<WakaTime> Initializing...");
 
       SendHeartbeat();
       LinkCallbacks();
@@ -86,19 +89,19 @@ namespace WakaTime {
         branch = "master";
         language = "unity";
         is_write = save;
-        is_debugging = _isDebug;
+        is_debugging = _debug;
       }
     }
 
     static void SendHeartbeat(bool fromSave = false) {
-      if (_isDebug) Debug.Log("<WakaTime> Sending heartbeat...");
+      if (_debug) Debug.Log("<WakaTime> Sending heartbeat...");
 
       var currentScene = EditorSceneManager.GetActiveScene().path;
       var file = currentScene != string.Empty ? Path.Combine(Application.dataPath, currentScene.Substring("Assets/".Length)) : string.Empty;
 
       var heartbeat = new Heartbeat(file, fromSave);
       if ((heartbeat.time - _lastHeartbeat.time < HEARTBEAT_COOLDOWN) && !fromSave && (heartbeat.entity == _lastHeartbeat.entity)) {
-        if (_isDebug) Debug.Log("<WakaTime> Skip this heartbeat");
+        if (_debug) Debug.Log("<WakaTime> Skip this heartbeat");
         return;
       }
 
@@ -115,17 +118,17 @@ namespace WakaTime {
           return;
         }
 
-        if (_isDebug) Debug.Log("<WakaTime> Got response\n" + request.downloadHandler.text);
+        if (_debug) Debug.Log("<WakaTime> Got response\n" + request.downloadHandler.text);
         var response = JsonUtility.FromJson<Response<HeartbeatResponse>>(request.downloadHandler.text);
 
         if (response.error != null) {
           if (response.error == "Duplicate") {
-            if (_isDebug) Debug.LogWarning("<WakaTime> Duplicate heartbeat");
+            if (_debug) Debug.LogWarning("<WakaTime> Duplicate heartbeat");
           } else {
             Debug.LogError("<WakaTime> Failed to send heartbeat to WakaTime!\n" + response.error);
           }
         } else {
-          if (_isDebug) Debug.Log("<WakaTime> Sent heartbeat!");
+          if (_debug) Debug.Log("<WakaTime> Sent heartbeat!");
           _lastHeartbeat = response.data;
         }
       };

@@ -14,11 +14,13 @@ namespace WakaTime {
   [InitializeOnLoad]
   public class Plugin {
     static string apiKey = "";
+    private static bool _enabled = true;
     static bool isDebug = false;
 
     const string URL_PREFIX = "https://wakatime.com/api/v1/";
     const int HEARTBEAT_COOLDOWN = 120;
     public const string PREFS_PATH = "WakaTime API Key";
+    public const string ENABLED_PREF = "WakaTime/Enabled";
 
     static HeartbeatResponse lastHeartbeat;
 
@@ -27,6 +29,14 @@ namespace WakaTime {
     }
 
     public static void Initialize() {
+      if (EditorPrefs.HasKey(ENABLED_PREF))
+        _enabled = EditorPrefs.GetBool(ENABLED_PREF);
+
+      if (!_enabled) {
+        if (isDebug) Debug.Log("<WakaTime> Explicitly disabled, skipping initialization...");
+        return;
+      }
+
       if (EditorPrefs.HasKey(PREFS_PATH)) {
         apiKey = EditorPrefs.GetString(PREFS_PATH);
       }
@@ -98,6 +108,11 @@ namespace WakaTime {
       request.SetRequestHeader("Content-Type", "application/json");
 
       request.SendWebRequest().completed += (operation) => {
+        if (request.downloadHandler.text == string.Empty) {
+          Debug.LogWarning("<WakaTime> Network is unreachable. Consider disabling completely if you're working offline");
+          return;
+        }
+
         if (isDebug) Debug.Log("<WakaTime> Got response\n" + request.downloadHandler.text);
         var response = JsonUtility.FromJson<Response<HeartbeatResponse>>(request.downloadHandler.text);
 

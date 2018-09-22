@@ -61,3 +61,5 @@ The plugin will automatically send heartbeats to WakaTime after following events
 * EditorSceneManager.sceneOpened
 * EditorSceneManager.sceneClosing
 * EditorSceneManager.newSceneCreated
+
+[![Become Patron](https://vladfaust.com/img/patreon-small.svg)](https://www.patreon.com/vladfaust)

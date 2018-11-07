@@ -5,7 +5,7 @@ A [WakaTime](https://wakatime.com) plugin for [Unity](https://unity.com).
 
 ## About
 
-Existing solutions didn't work for me (https://github.com/josec89/wakatime-unity is obsolete and https://github.com/bengsfort/WakaTime-Unity requires Python), so I decided to implement my own variant.
+Existing solutions didn't work for me (https://github.com/bengsfort/WakaTime-Unity is obsolete and https://github.com/josec89/wakatime-unity requires Python), so I decided to implement my own variant.
 
 The code has been successfuly tested with following Unity versions:
 

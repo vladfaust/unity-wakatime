@@ -6,6 +6,7 @@ using UnityEditor;
 namespace WakaTime {
   public class Window : EditorWindow {
     private string _apiKey = "";
+    private string _projectName = "";
     private bool _enabled = true;
     private bool _debug = true;
 
@@ -20,12 +21,14 @@ namespace WakaTime {
     void OnGUI() {
       _enabled = EditorGUILayout.Toggle("Enable WakaTime", _enabled);
       _apiKey = EditorGUILayout.TextField("API key", _apiKey);
+      _projectName = EditorGUILayout.TextField("Override project name", _projectName);
       _debug = EditorGUILayout.Toggle("Debug", _debug);
 
       EditorGUILayout.BeginHorizontal();
 
       if (GUILayout.Button("Save Preferences")) {
         EditorPrefs.SetString(Plugin.API_KEY_PREF, _apiKey);
+        EditorPrefs.SetString(Plugin.PROJECT_NAME_PREF, _projectName);
         EditorPrefs.SetBool(Plugin.ENABLED_PREF, _enabled);
         EditorPrefs.SetBool(Plugin.DEBUG_PREF, _debug);
         Plugin.Initialize();
@@ -40,6 +43,8 @@ namespace WakaTime {
     void OnFocus() {
       if (EditorPrefs.HasKey(Plugin.API_KEY_PREF))
         _apiKey = EditorPrefs.GetString(Plugin.API_KEY_PREF);
+      if (EditorPrefs.HasKey(Plugin.PROJECT_NAME_PREF))
+        _projectName = EditorPrefs.GetString(Plugin.PROJECT_NAME_PREF);
       if (EditorPrefs.HasKey(Plugin.ENABLED_PREF))
         _enabled = EditorPrefs.GetBool(Plugin.ENABLED_PREF);
       if (EditorPrefs.HasKey(Plugin.DEBUG_PREF))

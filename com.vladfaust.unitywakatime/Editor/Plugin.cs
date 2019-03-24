@@ -18,8 +18,10 @@ namespace WakaTime {
     public const string API_KEY_PREF = "WakaTime/APIKey";
     public const string ENABLED_PREF = "WakaTime/Enabled";
     public const string DEBUG_PREF = "WakaTime/Debug";
+    public static string PROJECT_NAME_PREF => $"WakaTime/ProjectName/{Application.productName}";
 
     private static string _apiKey = "";
+    private static string _projectName = "";
     private static bool _enabled = true;
     private static bool _debug = true;
 
@@ -47,6 +49,9 @@ namespace WakaTime {
       if (EditorPrefs.HasKey(API_KEY_PREF)) {
         _apiKey = EditorPrefs.GetString(API_KEY_PREF);
       }
+      
+      if (EditorPrefs.HasKey(PROJECT_NAME_PREF))
+        _projectName = EditorPrefs.GetString(PROJECT_NAME_PREF);
 
       if (_apiKey == string.Empty) {
         Debug.LogWarning("<WakaTime> API key is not set, skipping initialization...");
@@ -86,7 +91,7 @@ namespace WakaTime {
         entity = (file == string.Empty ? "Unsaved Scene" : file);
         type = "file";
         time = (float)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
-        project = Application.productName;
+        project = _projectName == string.Empty? Application.productName : _projectName;
         plugin = "unity-wakatime";
         branch = "master";
         language = "unity";

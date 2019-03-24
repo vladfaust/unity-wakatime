@@ -12,6 +12,7 @@ The code has been successfuly tested with following Unity versions:
 * 2017.4.0f1
 * 2018.1.0b13
 * 2018.1.2f1
+* 2018.3.6f1
 
 ## Known issues
 

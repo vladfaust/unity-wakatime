@@ -27,7 +27,7 @@ namespace WakaTime {
       
       if (GUILayout.Button("Change project name"))
       {
-        Plugin.OpenProjectFile();
+        ProjectEditWindow.Display();
         _needToReload = true;
       }
       

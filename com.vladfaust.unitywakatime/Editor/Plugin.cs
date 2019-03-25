@@ -18,10 +18,12 @@ namespace WakaTime {
     public const string API_KEY_PREF = "WakaTime/APIKey";
     public const string ENABLED_PREF = "WakaTime/Enabled";
     public const string DEBUG_PREF = "WakaTime/Debug";
-    public static string PROJECT_NAME_PREF => $"WakaTime/ProjectName/{Application.productName}";
+
+    public const string WAKATIME_PROJECT_FILE = ".wakatime-project";
+    
+    public static string ProjectName { get; private set; }
 
     private static string _apiKey = "";
-    private static string _projectName = "";
     private static bool _enabled = true;
     private static bool _debug = true;
 
@@ -49,19 +51,27 @@ namespace WakaTime {
       if (EditorPrefs.HasKey(API_KEY_PREF)) {
         _apiKey = EditorPrefs.GetString(API_KEY_PREF);
       }
-      
-      if (EditorPrefs.HasKey(PROJECT_NAME_PREF))
-        _projectName = EditorPrefs.GetString(PROJECT_NAME_PREF);
 
       if (_apiKey == string.Empty) {
         Debug.LogWarning("<WakaTime> API key is not set, skipping initialization...");
         return;
       }
 
+      ProjectName = GetProjectName();
+
       if (_debug) Debug.Log("<WakaTime> Initializing...");
 
       SendHeartbeat();
       LinkCallbacks();
+    }
+
+    public static void OpenProjectFile()
+    {
+      if (!File.Exists(WAKATIME_PROJECT_FILE)){
+        File.WriteAllLines(WAKATIME_PROJECT_FILE, new[] {Application.productName});
+      }
+
+      System.Diagnostics.Process.Start("notepad.exe", $"{WAKATIME_PROJECT_FILE}");
     }
 
     struct Response<T> {
@@ -88,10 +98,10 @@ namespace WakaTime {
       public bool is_debugging;
 
       public Heartbeat(string file, bool save = false) {
-        entity = (file == string.Empty ? "Unsaved Scene" : file);
+        entity = file == string.Empty ? "Unsaved Scene" : file;
         type = "file";
-        time = (float)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
-        project = _projectName == string.Empty? Application.productName : _projectName;
+        time = (float)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
+        project = ProjectName;
         plugin = "unity-wakatime";
         branch = "master";
         language = "unity";
@@ -193,6 +203,11 @@ namespace WakaTime {
       EditorSceneManager.sceneClosing += OnSceneClosing;
       EditorSceneManager.newSceneCreated += OnSceneCreated;
     }
+
+    private static string GetProjectName() => 
+      File.Exists(WAKATIME_PROJECT_FILE) 
+        ? File.ReadAllLines(WAKATIME_PROJECT_FILE)[0] 
+        : Application.productName;
   }
 }
 

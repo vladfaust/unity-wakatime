@@ -23,7 +23,7 @@ namespace WakaTime {
     void OnGUI() {
       _enabled = EditorGUILayout.Toggle("Enable WakaTime", _enabled);
       _apiKey = EditorGUILayout.TextField("API key", _apiKey);
-      EditorGUILayout.LabelField("Project name:", _projectName);
+      EditorGUILayout.LabelField("Project name", _projectName);
       
       if (GUILayout.Button("Change project name"))
       {

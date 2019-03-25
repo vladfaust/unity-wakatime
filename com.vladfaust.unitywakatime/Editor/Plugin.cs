@@ -8,7 +8,6 @@ using UnityEngine.Networking;
 using UnityEditor;
 using UnityEditor.Callbacks;
 using UnityEditor.SceneManagement;
-using System.Net;
 
 // Heavily inspired by https://github.com/bengsfort/WakaTime-Unity
 
@@ -65,13 +64,18 @@ namespace WakaTime {
       LinkCallbacks();
     }
 
-    public static void OpenProjectFile()
+    public static string[] GetProjectFile()
     {
       if (!File.Exists(WAKATIME_PROJECT_FILE)){
         File.WriteAllLines(WAKATIME_PROJECT_FILE, new[] {Application.productName});
       }
 
-      System.Diagnostics.Process.Start("notepad.exe", $"{WAKATIME_PROJECT_FILE}");
+      return File.ReadAllLines(WAKATIME_PROJECT_FILE);
+    }
+
+    public static void SetProjectFile(string[] content)
+    {
+      File.WriteAllLines(WAKATIME_PROJECT_FILE, content);
     }
 
     struct Response<T> {

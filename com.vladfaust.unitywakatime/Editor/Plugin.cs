@@ -64,14 +64,8 @@ namespace WakaTime {
       LinkCallbacks();
     }
 
-    public static string[] GetProjectFile()
-    {
-      if (!File.Exists(WAKATIME_PROJECT_FILE)){
-        File.WriteAllLines(WAKATIME_PROJECT_FILE, new[] {Application.productName});
-      }
-
-      return File.ReadAllLines(WAKATIME_PROJECT_FILE);
-    }
+    public static string[] GetProjectFile() =>
+      !File.Exists(WAKATIME_PROJECT_FILE) ? null : File.ReadAllLines(WAKATIME_PROJECT_FILE);
 
     public static void SetProjectFile(string[] content)
     {

@@ -1,3 +1,4 @@
+using System.IO;
 using UnityEditor;
 using UnityEngine;
 
@@ -7,11 +8,12 @@ namespace WakaTime
     {
         private static ProjectEditWindow _window;
         
-        private static readonly Vector2 Size = new Vector2(400, 138);
+        private static Vector2 _size = new Vector2(400, 138);
         private static string[] _projectSettings;
         private static string _branch;
-        private static readonly GUIStyle BranchStyle = new GUIStyle(EditorStyles.helpBox) {richText = true};
-        
+        private static readonly GUIStyle RichHelpBoxStyle = new GUIStyle(EditorStyles.helpBox) {richText = true};
+        private static bool _isProjectFileMissed;
+
         public static void Display()
         {
             if (_window)
@@ -23,19 +25,30 @@ namespace WakaTime
                 _window = CreateInstance<ProjectEditWindow>();
                 _window.ShowPopup();
             }
+
+            var pos = new Vector2(Screen.currentResolution.width, Screen.currentResolution.height) - _size;
             
-            var pos = new Vector2(Screen.currentResolution.width, Screen.currentResolution.height) - Size;
-            _window.position = new Rect(pos/2, Size);
-            _window.titleContent = new GUIContent("Change project name");
-            
+
             _projectSettings = new[] {"", ""};
-            Plugin.GetProjectFile().CopyTo(_projectSettings, 0);
-            _branch = string.IsNullOrEmpty(_projectSettings[1]) ? "<i>none</i>" : _projectSettings[1];
+            var projectFile = Plugin.GetProjectFile();
+            
+            if (projectFile == null)
+                _isProjectFileMissed = true;
+            else
+            {
+                _isProjectFileMissed = false;
+                projectFile.CopyTo(_projectSettings, 0);
+            }
+            _branch = string.IsNullOrEmpty(_projectSettings[1]) ? "" : _projectSettings[1];
+
+            _size.y = _isProjectFileMissed ? 170 : 138;
+            _window.position = new Rect(pos / 2, _size);
+            _window.titleContent = new GUIContent("Change project name");
         }
-        
+
         void OnGUI()
         {
-            EditorGUILayout.LabelField("Overrides project name while sending to WakaTime. If empty, will be used Product Name from PlayerSettings", BranchStyle);
+            EditorGUILayout.LabelField("A project name to send to WakaTime (Product Name from Player Settings by default)", RichHelpBoxStyle);
             EditorGUILayout.BeginHorizontal();
             {
                 EditorGUILayout.PrefixLabel("Project name");
@@ -43,14 +56,16 @@ namespace WakaTime
             }
             EditorGUILayout.EndHorizontal();
             EditorGUILayout.Space();
-            EditorGUILayout.LabelField("Overrides branch name while sending to WakaTime. If empty, will be used current branch <i>(not implemented in this plugin yet)</i>", BranchStyle);
+            EditorGUILayout.LabelField("A branch name to send to WakaTime (current git branch by default) <i>(not implemented in this plugin yet)</i>", RichHelpBoxStyle);
             EditorGUILayout.BeginHorizontal();
             {
                 EditorGUILayout.PrefixLabel("Current branch override");
-                EditorGUILayout.SelectableLabel(_branch, BranchStyle,
+                EditorGUILayout.SelectableLabel(_branch, RichHelpBoxStyle,
                     GUILayout.Height(EditorGUIUtility.singleLineHeight));
             }
             EditorGUILayout.EndHorizontal();
+            if (_isProjectFileMissed)
+                GUILayout.Label($"<b>{Path.GetFullPath(".wakatime_project")}</b> is missing. Press Save to create it", RichHelpBoxStyle);
             EditorGUILayout.BeginHorizontal();
             {
                 if (GUILayout.Button("Save"))

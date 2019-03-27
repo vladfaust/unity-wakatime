@@ -16,7 +16,7 @@ namespace WakaTime {
 
     [MenuItem("Window/WakaTime")]
     static void Init() {
-      Window window = (Window)GetWindow(typeof(Window), false, "WakaTime");
+      Window window = (Window) GetWindow(typeof(Window), false, "WakaTime");
       window.Show();
     }
 
@@ -24,13 +24,12 @@ namespace WakaTime {
       _enabled = EditorGUILayout.Toggle("Enable WakaTime", _enabled);
       _apiKey = EditorGUILayout.TextField("API key", _apiKey);
       EditorGUILayout.LabelField("Project name", _projectName);
-      
-      if (GUILayout.Button("Change project name"))
-      {
+
+      if (GUILayout.Button("Change project name")) {
         ProjectEditWindow.Display();
         _needToReload = true;
       }
-      
+
       _debug = EditorGUILayout.Toggle("Debug", _debug);
 
       EditorGUILayout.BeginHorizontal();
@@ -49,12 +48,11 @@ namespace WakaTime {
     }
 
     void OnFocus() {
-      if (_needToReload)
-      {
+      if (_needToReload) {
         Plugin.Initialize();
         _needToReload = false;
       }
-      
+
       if (EditorPrefs.HasKey(Plugin.API_KEY_PREF))
         _apiKey = EditorPrefs.GetString(Plugin.API_KEY_PREF);
       if (EditorPrefs.HasKey(Plugin.ENABLED_PREF))

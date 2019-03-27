@@ -17,9 +17,8 @@ namespace WakaTime {
     public const string API_KEY_PREF = "WakaTime/APIKey";
     public const string ENABLED_PREF = "WakaTime/Enabled";
     public const string DEBUG_PREF = "WakaTime/Debug";
-
     public const string WAKATIME_PROJECT_FILE = ".wakatime-project";
-    
+
     public static string ProjectName { get; private set; }
 
     private static string _apiKey = "";
@@ -64,11 +63,26 @@ namespace WakaTime {
       LinkCallbacks();
     }
 
+    /// <summary>
+    /// Reads .wakatime-project
+    /// <seealso cref="https://wakatime.com/faq#rename-projects"/> 
+    /// </summary>
+    /// <returns>Lines of .wakatime-project or null if file not found</returns>
     public static string[] GetProjectFile() =>
       !File.Exists(WAKATIME_PROJECT_FILE) ? null : File.ReadAllLines(WAKATIME_PROJECT_FILE);
 
-    public static void SetProjectFile(string[] content)
-    {
+    /// <summary>
+    /// Rewrites o creates new .wakatime-project with given lines
+    /// <seealso cref="https://wakatime.com/faq#rename-projects"/>
+    /// </summary>
+    /// <example>
+    /// <code> 
+    /// project-override-name
+    /// branch-override-name
+    /// </code>
+    /// </example>
+    /// <param name="content"></param>
+    public static void SetProjectFile(string[] content) {
       File.WriteAllLines(WAKATIME_PROJECT_FILE, content);
     }
 
@@ -98,7 +112,7 @@ namespace WakaTime {
       public Heartbeat(string file, bool save = false) {
         entity = file == string.Empty ? "Unsaved Scene" : file;
         type = "file";
-        time = (float)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
+        time = (float) DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
         project = ProjectName;
         plugin = "unity-wakatime";
         branch = "master";
@@ -112,10 +126,13 @@ namespace WakaTime {
       if (_debug) Debug.Log("<WakaTime> Sending heartbeat...");
 
       var currentScene = EditorSceneManager.GetActiveScene().path;
-      var file = currentScene != string.Empty ? Path.Combine(Application.dataPath, currentScene.Substring("Assets/".Length)) : string.Empty;
+      var file = currentScene != string.Empty
+        ? Path.Combine(Application.dataPath, currentScene.Substring("Assets/".Length))
+        : string.Empty;
 
       var heartbeat = new Heartbeat(file, fromSave);
-      if ((heartbeat.time - _lastHeartbeat.time < HEARTBEAT_COOLDOWN) && !fromSave && (heartbeat.entity == _lastHeartbeat.entity)) {
+      if ((heartbeat.time - _lastHeartbeat.time < HEARTBEAT_COOLDOWN) && !fromSave &&
+        (heartbeat.entity == _lastHeartbeat.entity)) {
         if (_debug) Debug.Log("<WakaTime> Skip this heartbeat");
         return;
       }
@@ -127,29 +144,38 @@ namespace WakaTime {
       request.chunkedTransfer = false;
       request.SetRequestHeader("Content-Type", "application/json");
 
-      request.SendWebRequest().completed += (operation) => {
-        if (request.downloadHandler.text == string.Empty) {
-          Debug.LogWarning("<WakaTime> Network is unreachable. Consider disabling completely if you're working offline");
-          return;
-        }
-
-        if (_debug) Debug.Log("<WakaTime> Got response\n" + request.downloadHandler.text);
-        var response = JsonUtility.FromJson<Response<HeartbeatResponse>>(request.downloadHandler.text);
-
-        if (response.error != null) {
-          if (response.error == "Duplicate") {
-            if (_debug) Debug.LogWarning("<WakaTime> Duplicate heartbeat");
-          } else {
-            Debug.LogError("<WakaTime> Failed to send heartbeat to WakaTime!\n" + response.error);
+      request.SendWebRequest().completed +=
+        operation => {
+          if (request.downloadHandler.text == string.Empty) {
+            Debug.LogWarning(
+              "<WakaTime> Network is unreachable. Consider disabling completely if you're working offline");
+            return;
           }
-        } else {
-          if (_debug) Debug.Log("<WakaTime> Sent heartbeat!");
-          _lastHeartbeat = response.data;
-        }
-      };
+
+          if (_debug)
+            Debug.Log("<WakaTime> Got response\n" + request.downloadHandler.text);
+          var response =
+            JsonUtility.FromJson<Response<HeartbeatResponse>>(
+              request.downloadHandler.text);
+
+          if (response.error != null) {
+            if (response.error == "Duplicate") {
+              if (_debug) Debug.LogWarning("<WakaTime> Duplicate heartbeat");
+            }
+            else {
+              Debug.LogError(
+                "<WakaTime> Failed to send heartbeat to WakaTime!\n" +
+                response.error);
+            }
+          }
+          else {
+            if (_debug) Debug.Log("<WakaTime> Sent heartbeat!");
+            _lastHeartbeat = response.data;
+          }
+        };
     }
 
-    [DidReloadScripts()]
+    [DidReloadScripts]
     static void OnScriptReload() {
       Initialize();
     }
@@ -202,9 +228,13 @@ namespace WakaTime {
       EditorSceneManager.newSceneCreated += OnSceneCreated;
     }
 
-    private static string GetProjectName() => 
-      File.Exists(WAKATIME_PROJECT_FILE) 
-        ? File.ReadAllLines(WAKATIME_PROJECT_FILE)[0] 
+    /// <summary>
+    /// Project name for sending <see cref="Heartbeat"/>
+    /// </summary>
+    /// <returns><see cref="Application.productName"/> or first line of .wakatime-project</returns>
+    private static string GetProjectName() =>
+      File.Exists(WAKATIME_PROJECT_FILE)
+        ? File.ReadAllLines(WAKATIME_PROJECT_FILE)[0]
         : Application.productName;
   }
 }

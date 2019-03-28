@@ -64,7 +64,7 @@ namespace WakaTime {
     }
 
     /// <summary>
-    /// Reads .wakatime-project
+    /// Reads .wakatime-project file
     /// <seealso cref="https://wakatime.com/faq#rename-projects"/> 
     /// </summary>
     /// <returns>Lines of .wakatime-project or null if file not found</returns>
@@ -72,7 +72,7 @@ namespace WakaTime {
       !File.Exists(WAKATIME_PROJECT_FILE) ? null : File.ReadAllLines(WAKATIME_PROJECT_FILE);
 
     /// <summary>
-    /// Rewrites o creates new .wakatime-project with given lines
+    /// Rewrites o creates new .wakatime-project file with given lines
     /// <seealso cref="https://wakatime.com/faq#rename-projects"/>
     /// </summary>
     /// <example>

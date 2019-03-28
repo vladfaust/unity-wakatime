@@ -28,7 +28,7 @@ namespace WakaTime {
                 _window.ShowPopup();
             }
 
-            //We need only first 2 lines from .wakatime-project 
+            // We need only first 2 lines from .wakatime-project 
             _projectSettings = new[] {"", ""};
             var projectFile = Plugin.GetProjectFile();
 
@@ -40,48 +40,47 @@ namespace WakaTime {
             }
 
             _branch = string.IsNullOrEmpty(_projectSettings[1])
-                ? "" //TODO read current git branch
+                ? "" // TODO: Read current git branch
                 : _projectSettings[1]; 
 
-            //If we need to display "project file missing" line, we are making different height
-            //TODO calculate height dynamically, if path is too long buttons may not fit
+            // If we need to display "project file missing" line, we are making different height
+            // TODO: calculate height dynamically, if path is too long buttons may not fit
             _size.y = _isProjectFileMissed ? 170 : 138;
 
-            //Displaying in screen center
+            // Display at screen center
             var pos = new Vector2(Screen.currentResolution.width, Screen.currentResolution.height) - _size;
             _window.position = new Rect(pos / 2, _size);
             _window.titleContent = new GUIContent("Change project name");
         }
 
         void OnGUI() {
-            EditorGUILayout.LabelField(
-                "A project name to send to WakaTime (Product Name from Player Settings by default)", RichHelpBoxStyle);
             EditorGUILayout.BeginHorizontal(); {
                 EditorGUILayout.PrefixLabel("Project name");
                 _projectSettings[0] = EditorGUILayout.TextField(_projectSettings[0]);
             }
             EditorGUILayout.EndHorizontal();
-            EditorGUILayout.Space();
-
             EditorGUILayout.LabelField(
-                "A branch name to send to WakaTime (current git branch by default) <i>(not implemented in this plugin yet)</i>",
-                RichHelpBoxStyle);
+                "A project name to send to WakaTime (Product Name from Player Settings by default)", RichHelpBoxStyle);
+
             EditorGUILayout.BeginHorizontal(); {
-                EditorGUILayout.PrefixLabel("Current branch override");
+                EditorGUILayout.PrefixLabel("Branch");
                 EditorGUILayout.SelectableLabel(_branch, RichHelpBoxStyle,
                     GUILayout.Height(EditorGUIUtility.singleLineHeight));
             }
             EditorGUILayout.EndHorizontal();
+            EditorGUILayout.LabelField(
+                "A branch name to send to WakaTime (current git branch by default) <i>(not implemented in this plugin yet)</i>",
+                RichHelpBoxStyle);
 
             if (_isProjectFileMissed)
-                GUILayout.Label($"<b>{Path.GetFullPath(".wakatime_project")}</b> is missing. Press Save to create it",
+                GUILayout.Label($"<b>{Path.GetFullPath(".wakatime_project")}</b> will be created on save",
                     RichHelpBoxStyle);
             EditorGUILayout.BeginHorizontal(); {
                 if (GUILayout.Button("Save")) {
                     Plugin.SetProjectFile(_projectSettings);
                     Plugin.Initialize();
                     CloseAndNull();
-                    FocusWindowIfItsOpen<Window>(); //Updates main window for information redraw
+                    FocusWindowIfItsOpen<Window>(); // Updates main window for information redraw
                 }
 
                 if (GUILayout.Button("Cancel")) {

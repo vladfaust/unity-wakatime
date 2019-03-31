@@ -211,8 +211,12 @@ namespace WakaTime {
     static void LinkCallbacks(bool clean = false) {
       if (clean) {
         EditorApplication.playModeStateChanged -= OnPlaymodeStateChanged;
-        EditorApplication.contextualPropertyMenu -= OnPropertyContextMenu;
-        EditorApplication.hierarchyWindowChanged -= OnHierarchyWindowChanged;
+        EditorApplication.contextualPropertyMenu -= OnPropertyContextMenu;  
+        #if UNITY_2018_1_OR_NEWER
+          EditorApplication.hierarchyChanged -= OnHierarchyWindowChanged;
+        #else
+          EditorApplication.hierarchyWindowChanged -= OnHierarchyWindowChanged;
+        #endif  
         EditorSceneManager.sceneSaved -= OnSceneSaved;
         EditorSceneManager.sceneOpened -= OnSceneOpened;
         EditorSceneManager.sceneClosing -= OnSceneClosing;
@@ -221,7 +225,11 @@ namespace WakaTime {
 
       EditorApplication.playModeStateChanged += OnPlaymodeStateChanged;
       EditorApplication.contextualPropertyMenu += OnPropertyContextMenu;
-      EditorApplication.hierarchyWindowChanged += OnHierarchyWindowChanged;
+      #if UNITY_2018_1_OR_NEWER
+        EditorApplication.hierarchyChanged += OnHierarchyWindowChanged;
+      #else
+        EditorApplication.hierarchyWindowChanged += OnHierarchyWindowChanged;
+      #endif
       EditorSceneManager.sceneSaved += OnSceneSaved;
       EditorSceneManager.sceneOpened += OnSceneOpened;
       EditorSceneManager.sceneClosing += OnSceneClosing;

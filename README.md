@@ -13,10 +13,7 @@ The code has been successfuly tested with following Unity versions:
 * 2018.1.0b13
 * 2018.1.2f1
 * 2018.3.6f1
-
-## Known issues
-
-* Getting `'UnityEditor.EditorApplication.hierarchyWindowChanged' is obsolete: Use 'EditorApplication.hierarchyChanged'` warning on Unity 2018.x
+* 2018.3.10f1
 
 ## Installation using the Unity Package Manager (Unity 2018.1+)
 

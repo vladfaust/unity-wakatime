@@ -1,15 +1,11 @@
 #!/bin/bash
 
-#set -e
 set -x
 
-#echo "git push"
 REMOTE=$(git config --get remote.origin.url)
 echo $REMOTE
 COMMIT=$(git log -1 --pretty=%B)
 echo $COMMIT
-
-echo "TARGET_BRANCH is $TARGET_BRANCH"
 
 git archive -o archive.tar HEAD:$FOLDER_TO_EXPORT
 ARCHIVE_PATH=$(pwd)
@@ -31,9 +27,6 @@ rm ./ -dr -- !(.git)
 
 mv $ARCHIVE_PATH/archive.tar archive.tar
 
-echo "Archive content:"
-
-tar -tf archive.tar
 tar -xf archive.tar --overwrite
 rm archive.tar
 

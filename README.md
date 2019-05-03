@@ -23,14 +23,14 @@ The [Unity Package Manager](https://docs.unity3d.com/Packages/com.unity.package-
 
 1. Modify your project's `Packages/manifest.json` file to add the line:
     ```json
-    "com.vladfaust.unitywakatime": "https://github.com/vladfaust/unity-wakatime.git#upm"
+    "com.vladfaust.unitywakatime": "https://github.com/vladfaust/unity-wakatime.git#package"
     ```
     Make sure it's still a valid JSON file. For example:
     ```json
     {
         "dependencies": {
             "com.unity.ads": "2.0.8",
-            "com.vladfaust.unitywakatime": "https://github.com/vladfaust/unity-wakatime.git#upm"
+            "com.vladfaust.unitywakatime": "https://github.com/vladfaust/unity-wakatime.git#package"
         }
     }
     ```
@@ -38,7 +38,7 @@ The [Unity Package Manager](https://docs.unity3d.com/Packages/com.unity.package-
     ```json
     "com.vladfaust.unitywakatime": {
       "hash": "31fe84232fc9f9c6e9606dc9e5a285886a94f26b",
-      "revision": "upm"
+      "revision": "package"
     }
     ```
 

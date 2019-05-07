@@ -1,17 +1,10 @@
 language: generic
-
 env:
   - TARGET_BRANCH=package FOLDER_TO_EXPORT=Assets/com.vladfaust.unitywakatime
-
 sudo: required
-
 after_success:
   - chmod 777 -R Ci
   - Ci/move_to_packagebranch.sh
-
 branches:
   only:
     - master
-    - develop
-  except:
-    - /^(?i:upm).*$/

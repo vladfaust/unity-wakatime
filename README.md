@@ -1,4 +1,5 @@
 # unity-wakatime
+
 A [WakaTime](https://wakatime.com) plugin for [Unity](https://unity.com).
 
 ![Screenshot](https://user-images.githubusercontent.com/7955682/38732057-79cf45b4-3f25-11e8-958f-07ba5290caba.PNG)
@@ -21,11 +22,14 @@ The code has been successfully tested with following Unity versions:
 
 The [Unity Package Manager](https://docs.unity3d.com/Packages/com.unity.package-manager-ui@1.8/manual/index.html) (UPM) is a new method to manage external packages. It keeps package contents separate from your main project files.
 
-1. Modify your project's `Packages/manifest.json` file to add the line:
+1. Modify your project's `Packages/manifest.json` file adding this line:
+
     ```json
     "com.vladfaust.unitywakatime": "https://github.com/vladfaust/unity-wakatime.git#package"
     ```
+
     Make sure it's still a valid JSON file. For example:
+
     ```json
     {
         "dependencies": {
@@ -34,7 +38,9 @@ The [Unity Package Manager](https://docs.unity3d.com/Packages/com.unity.package-
         }
     }
     ```
-2. To manually update you need to delete from `lock` section in `Packages/manifest.json` something like this:
+
+2. To update the package you need to delete the package lock entry in the `lock` section in `Packages/manifest.json`. The entry to delete could look like this:
+
     ```json
     "com.vladfaust.unitywakatime": {
       "hash": "31fe84232fc9f9c6e9606dc9e5a285886a94f26b",
@@ -44,16 +50,14 @@ The [Unity Package Manager](https://docs.unity3d.com/Packages/com.unity.package-
 
 ## Installation (all other Unity versions)
 
-If not using the Unity Package Manager, copying the files locally also work.
-
-1. Copy the `Editor` folder from inside `com.vladfaust.unitywakatime` into your project Assets
+If you don't use the Unity Package Manager, you may copy the `Editor` folder from inside `Assets/com.vladfaust.unitywakatime` into your project's `Assets` folder.
 
 ## Setup
 
 1. Run the Unity editor, go to `Window/WakaTime`, and insert your API key (grab one from https://wakatime.com/settings/account)
-1. Press `Save Preferences`
-1. Check if `"Unity"` editor appears at https://wakatime.com/api/v1/users/current/user_agents (may be a bit delayed)
-1. Enjoy!
+2. Press `Save Preferences`
+3. Check if `"Unity"` editor appears at https://wakatime.com/api/v1/users/current/user_agents (may be a bit delayed)
+4. Enjoy!
 
 ## Usage
 

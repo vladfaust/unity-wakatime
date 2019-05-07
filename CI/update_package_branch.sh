@@ -3,9 +3,7 @@
 set -x
 
 REMOTE=$(git config --get remote.origin.url)
-echo $REMOTE
 COMMIT=$(git log -1 --pretty=%B)
-echo $COMMIT
 
 git archive -o archive.tar HEAD:$FOLDER_TO_EXPORT
 ARCHIVE_PATH=$(pwd)
@@ -31,9 +29,6 @@ tar -xf archive.tar --overwrite
 rm archive.tar
 
 git add -A
-
-echo "Diffs:"
-git diff --cached
 
 git config --global user.email "travis@travis-ci.org"
 git config --global user.name "Travis CI"

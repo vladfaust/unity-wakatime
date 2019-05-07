@@ -1,5 +1,3 @@
-#if (UNITY_EDITOR)
-
 using UnityEngine;
 using UnityEditor;
 
@@ -64,5 +62,3 @@ namespace WakaTime {
     }
   }
 }
-
-#endif

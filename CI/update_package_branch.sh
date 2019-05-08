@@ -1,6 +1,14 @@
 #!/bin/bash
 
-set -x
+set -e
+
+eval "$(ssh-agent -s)"
+openssl aes-256-cbc -K $encrypted_b77369d471a1_key -iv $encrypted_b77369d471a1_iv -in CI/github_deploy_key.enc -out github_deploy_key -d
+chmod 600 github_deploy_key
+ssh-add github_deploy_key
+
+TARGET_BRANCH=package
+FOLDER_TO_EXPORT=Assets/com.vladfaust.unitywakatime
 
 REMOTE=$(git config --get remote.origin.url)
 COMMIT=$(git log -1 --pretty=%B)
@@ -21,7 +29,7 @@ else
 fi
 
 shopt -s extglob
-rm ./ -dr -- !(.git)
+rm -rf -- !(.git|.|..)
 
 mv $ARCHIVE_PATH/archive.tar archive.tar
 
@@ -33,6 +41,6 @@ git add -A
 git config --global user.email "travis@travis-ci.org"
 git config --global user.name "Travis CI"
 
-git commit -m "$COMMIT"
+git commit -m "$COMMIT" || true
 
-git push https://$GITHUB_TOKEN@${REMOTE#*//} $TARGET_BRANCH
+git push git@github.com:${TRAVIS_REPO_SLUG}.git $TARGET_BRANCH

@@ -1,5 +1,7 @@
-#if (UNITY_EDITOR)
 
+
+using System.Net.Http;
+#if (UNITY_EDITOR)
 using System;
 using System.IO;
 using UnityEngine;
@@ -154,6 +156,8 @@ namespace WakaTime {
 
           if (_debug)
             Debug.Log("<WakaTime> Got response\n" + request.downloadHandler.text);
+          if (!HandleHttpResponseSuccess(request)) return;
+
           var response =
             JsonUtility.FromJson<Response<HeartbeatResponse>>(
               request.downloadHandler.text);
@@ -173,6 +177,37 @@ namespace WakaTime {
             _lastHeartbeat = response.data;
           }
         };
+    }
+
+    /// <summary>
+    /// Checks for status code and takes correspond actions 
+    /// </summary>
+    /// <param name="request"></param>
+    /// <returns>Is request fine for further operations</returns>
+    private static bool HandleHttpResponseSuccess(UnityWebRequest request) {
+      var code = request.responseCode;
+      switch (code) {
+        case 200:
+        case 201:
+        case 202:
+          return true;
+        case 400:
+        case 401:
+        case 403:
+        case 404:
+          Debug.LogException(new HttpRequestException($"<WakaTime> {request.error}"));
+          break;
+        case 429:
+          //TODO: cooldown
+          if (_debug)
+            Debug.LogWarning("<WakaTime> Too many request, cooling down");
+          break;
+        case 500:
+          break;
+        default:
+          throw new HttpRequestException($"<WakaTime> Unable to decide what to do with this code: {code}");
+      }
+      return false;
     }
 
     [DidReloadScripts]

@@ -133,7 +133,8 @@ namespace WakaTime {
         : string.Empty;
 
       var heartbeat = new Heartbeat(file, fromSave);
-      if ((heartbeat.time - _lastHeartbeat.time < HEARTBEAT_COOLDOWN) && !fromSave &&
+      if ((heartbeat.time - _lastHeartbeat.time < HEARTBEAT_COOLDOWN) && !fromSave && 
+        //BUG: _lastHeartbeat has no time, entity or type
         (heartbeat.entity == _lastHeartbeat.entity)) {
         if (_debug) Debug.Log("<WakaTime> Skip this heartbeat");
         return;
@@ -148,11 +149,11 @@ namespace WakaTime {
 
       request.SendWebRequest().completed +=
         operation => {
-          if (request.downloadHandler.text == string.Empty) {
+          /*if (request.downloadHandler.text == string.Empty) {
             Debug.LogWarning(
               "<WakaTime> Network is unreachable. Consider disabling completely if you're working offline");
             return;
-          }
+          }*/
 
           if (_debug)
             Debug.Log("<WakaTime> Got response\n" + request.downloadHandler.text);
@@ -191,6 +192,9 @@ namespace WakaTime {
         case 201:
         case 202:
           return true;
+        case 0:
+          //TODO: offline
+        break;
         case 400:
         case 401:
         case 403:
@@ -203,6 +207,7 @@ namespace WakaTime {
             Debug.LogWarning("<WakaTime> Too many request, cooling down");
           break;
         case 500:
+          //TODO: server is down
           break;
         default:
           throw new HttpRequestException($"<WakaTime> Unable to decide what to do with this code: {code}");

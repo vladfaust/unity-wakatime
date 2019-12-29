@@ -86,11 +86,13 @@ namespace WakaTime {
       File.WriteAllLines(WAKATIME_PROJECT_FILE, content);
     }
 
+    [Serializable]
     struct Response<T> {
       public string error;
       public T data;
     }
 
+    [Serializable]
     struct HeartbeatResponse {
       public string id;
       public string entity;
@@ -127,7 +129,7 @@ namespace WakaTime {
 
       var currentScene = EditorSceneManager.GetActiveScene().path;
       var file = currentScene != string.Empty
-        ? Path.Combine(Application.dataPath, currentScene.Substring("Assets/".Length))
+        ? Application.dataPath + "/" + currentScene.Substring("Assets/".Length)
         : string.Empty;
 
       var heartbeat = new Heartbeat(file, fromSave);
@@ -216,7 +218,7 @@ namespace WakaTime {
           EditorApplication.hierarchyChanged -= OnHierarchyWindowChanged;
         #else
           EditorApplication.hierarchyWindowChanged -= OnHierarchyWindowChanged;
-        #endif  
+        #endif
         EditorSceneManager.sceneSaved -= OnSceneSaved;
         EditorSceneManager.sceneOpened -= OnSceneOpened;
         EditorSceneManager.sceneClosing -= OnSceneClosing;

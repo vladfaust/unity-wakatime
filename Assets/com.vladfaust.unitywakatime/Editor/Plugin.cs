@@ -87,15 +87,15 @@ namespace WakaTime {
     }
 
     struct Response<T> {
-      public string error;
-      public T data;
+      public string error = null;
+      public T data = default(T);
     }
 
     struct HeartbeatResponse {
-      public string id;
-      public string entity;
-      public string type;
-      public float time;
+      public string id = null;
+      public string entity = null;
+      public string type = null;
+      public float time = 0f;
     }
 
     struct Heartbeat {
@@ -141,7 +141,6 @@ namespace WakaTime {
 
       var request = UnityWebRequest.Post(URL_PREFIX + "users/current/heartbeats?api_key=" + _apiKey, string.Empty);
       request.uploadHandler = new UploadHandlerRaw(System.Text.Encoding.UTF8.GetBytes(heartbeatJSON));
-      request.chunkedTransfer = false;
       request.SetRequestHeader("Content-Type", "application/json");
 
       request.SendWebRequest().completed +=

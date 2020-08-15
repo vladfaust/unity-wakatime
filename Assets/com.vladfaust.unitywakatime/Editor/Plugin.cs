@@ -1,5 +1,7 @@
-#if (UNITY_EDITOR)
 
+
+using System.Net.Http;
+#if (UNITY_EDITOR)
 using System;
 using System.IO;
 using UnityEngine;
@@ -133,7 +135,8 @@ namespace WakaTime {
         : string.Empty;
 
       var heartbeat = new Heartbeat(file, fromSave);
-      if ((heartbeat.time - _lastHeartbeat.time < HEARTBEAT_COOLDOWN) && !fromSave &&
+      if ((heartbeat.time - _lastHeartbeat.time < HEARTBEAT_COOLDOWN) && !fromSave && 
+        //BUG: _lastHeartbeat has no time, entity or type
         (heartbeat.entity == _lastHeartbeat.entity)) {
         if (_debug) Debug.Log("<WakaTime> Skip this heartbeat");
         return;
@@ -147,14 +150,16 @@ namespace WakaTime {
 
       request.SendWebRequest().completed +=
         operation => {
-          if (request.downloadHandler.text == string.Empty) {
+          /*if (request.downloadHandler.text == string.Empty) {
             Debug.LogWarning(
               "<WakaTime> Network is unreachable. Consider disabling completely if you're working offline");
             return;
-          }
+          }*/
 
           if (_debug)
             Debug.Log("<WakaTime> Got response\n" + request.downloadHandler.text);
+          if (!HandleHttpResponseSuccess(request)) return;
+
           var response =
             JsonUtility.FromJson<Response<HeartbeatResponse>>(
               request.downloadHandler.text);
@@ -174,6 +179,41 @@ namespace WakaTime {
             _lastHeartbeat = response.data;
           }
         };
+    }
+
+    /// <summary>
+    /// Checks for status code and takes correspond actions 
+    /// </summary>
+    /// <param name="request"></param>
+    /// <returns>Is request fine for further operations</returns>
+    private static bool HandleHttpResponseSuccess(UnityWebRequest request) {
+      var code = request.responseCode;
+      switch (code) {
+        case 200:
+        case 201:
+        case 202:
+          return true;
+        case 0:
+          //TODO: offline
+        break;
+        case 400:
+        case 401:
+        case 403:
+        case 404:
+          Debug.LogException(new HttpRequestException($"<WakaTime> {request.error}"));
+          break;
+        case 429:
+          //TODO: cooldown
+          if (_debug)
+            Debug.LogWarning("<WakaTime> Too many request, cooling down");
+          break;
+        case 500:
+          //TODO: server is down
+          break;
+        default:
+          throw new HttpRequestException($"<WakaTime> Unable to decide what to do with this code: {code}");
+      }
+      return false;
     }
 
     [DidReloadScripts]

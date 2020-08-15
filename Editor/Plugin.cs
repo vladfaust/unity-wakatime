@@ -25,7 +25,7 @@ namespace WakaTime {
     private static bool _enabled = true;
     private static bool _debug = true;
 
-    private const string URL_PREFIX = "https://wakatime.com/api/v1/";
+    private const string URL_PREFIX = "https://api.wakatime.com/api/v1/";
     private const int HEARTBEAT_COOLDOWN = 120;
 
     private static HeartbeatResponse _lastHeartbeat;
@@ -65,7 +65,7 @@ namespace WakaTime {
 
     /// <summary>
     /// Reads .wakatime-project file
-    /// <seealso cref="https://wakatime.com/faq#rename-projects"/> 
+    /// <seealso cref="https://wakatime.com/faq#rename-projects"/>
     /// </summary>
     /// <returns>Lines of .wakatime-project or null if file not found</returns>
     public static string[] GetProjectFile() =>
@@ -76,7 +76,7 @@ namespace WakaTime {
     /// <seealso cref="https://wakatime.com/faq#rename-projects"/>
     /// </summary>
     /// <example>
-    /// <code> 
+    /// <code>
     /// project-override-name
     /// branch-override-name
     /// </code>
@@ -86,11 +86,13 @@ namespace WakaTime {
       File.WriteAllLines(WAKATIME_PROJECT_FILE, content);
     }
 
+    [Serializable]
     struct Response<T> {
       public string error;
       public T data;
     }
 
+    [Serializable]
     struct HeartbeatResponse {
       public string id;
       public string entity;
@@ -127,7 +129,7 @@ namespace WakaTime {
 
       var currentScene = EditorSceneManager.GetActiveScene().path;
       var file = currentScene != string.Empty
-        ? Path.Combine(Application.dataPath, currentScene.Substring("Assets/".Length))
+        ? Application.dataPath + "/" + currentScene.Substring("Assets/".Length)
         : string.Empty;
 
       var heartbeat = new Heartbeat(file, fromSave);
@@ -141,7 +143,6 @@ namespace WakaTime {
 
       var request = UnityWebRequest.Post(URL_PREFIX + "users/current/heartbeats?api_key=" + _apiKey, string.Empty);
       request.uploadHandler = new UploadHandlerRaw(System.Text.Encoding.UTF8.GetBytes(heartbeatJSON));
-      request.chunkedTransfer = false;
       request.SetRequestHeader("Content-Type", "application/json");
 
       request.SendWebRequest().completed +=
@@ -211,12 +212,12 @@ namespace WakaTime {
     static void LinkCallbacks(bool clean = false) {
       if (clean) {
         EditorApplication.playModeStateChanged -= OnPlaymodeStateChanged;
-        EditorApplication.contextualPropertyMenu -= OnPropertyContextMenu;  
+        EditorApplication.contextualPropertyMenu -= OnPropertyContextMenu;
         #if UNITY_2018_1_OR_NEWER
           EditorApplication.hierarchyChanged -= OnHierarchyWindowChanged;
         #else
           EditorApplication.hierarchyWindowChanged -= OnHierarchyWindowChanged;
-        #endif  
+        #endif
         EditorSceneManager.sceneSaved -= OnSceneSaved;
         EditorSceneManager.sceneOpened -= OnSceneOpened;
         EditorSceneManager.sceneClosing -= OnSceneClosing;

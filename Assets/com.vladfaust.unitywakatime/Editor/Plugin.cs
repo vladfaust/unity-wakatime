@@ -127,7 +127,7 @@ namespace WakaTime {
 
       var currentScene = EditorSceneManager.GetActiveScene().path;
       var file = currentScene != string.Empty
-        ? Path.Combine(Application.dataPath, currentScene.Substring("Assets/".Length))
+        ? Application.dataPath + "/" + currentScene.Substring("Assets/".Length)
         : string.Empty;
 
       var heartbeat = new Heartbeat(file, fromSave);

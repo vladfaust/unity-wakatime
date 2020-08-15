@@ -10,6 +10,9 @@ ssh-add github_deploy_key
 TARGET_BRANCH=package
 FOLDER_TO_EXPORT=Assets/com.vladfaust.unitywakatime
 
+# Put the ubiquitous meta files back
+rsync -av CI/Meta/ FOLDER_TO_EXPORT
+
 REMOTE=$(git config --get remote.origin.url)
 COMMIT=$(git log -1 --pretty=%B)
 

@@ -4,4 +4,3 @@ deploy:
   script: bash CI/update_package_branch.sh
   on:
     tags: true
-    condition: $TRAVIS_TAG =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-\+][\w\.-]+)*$

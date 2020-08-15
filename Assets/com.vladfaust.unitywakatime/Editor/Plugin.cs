@@ -65,7 +65,7 @@ namespace WakaTime {
 
     /// <summary>
     /// Reads .wakatime-project file
-    /// <seealso cref="https://wakatime.com/faq#rename-projects"/> 
+    /// <seealso cref="https://wakatime.com/faq#rename-projects"/>
     /// </summary>
     /// <returns>Lines of .wakatime-project or null if file not found</returns>
     public static string[] GetProjectFile() =>
@@ -76,7 +76,7 @@ namespace WakaTime {
     /// <seealso cref="https://wakatime.com/faq#rename-projects"/>
     /// </summary>
     /// <example>
-    /// <code> 
+    /// <code>
     /// project-override-name
     /// branch-override-name
     /// </code>
@@ -211,12 +211,12 @@ namespace WakaTime {
     static void LinkCallbacks(bool clean = false) {
       if (clean) {
         EditorApplication.playModeStateChanged -= OnPlaymodeStateChanged;
-        EditorApplication.contextualPropertyMenu -= OnPropertyContextMenu;  
+        EditorApplication.contextualPropertyMenu -= OnPropertyContextMenu;
         #if UNITY_2018_1_OR_NEWER
           EditorApplication.hierarchyChanged -= OnHierarchyWindowChanged;
         #else
           EditorApplication.hierarchyWindowChanged -= OnHierarchyWindowChanged;
-        #endif  
+        #endif
         EditorSceneManager.sceneSaved -= OnSceneSaved;
         EditorSceneManager.sceneOpened -= OnSceneOpened;
         EditorSceneManager.sceneClosing -= OnSceneClosing;

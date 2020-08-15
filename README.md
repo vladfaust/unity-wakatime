@@ -8,16 +8,6 @@ A [WakaTime](https://wakatime.com) plugin for [Unity](https://unity.com).
 
 Existing solutions didn't work for me (https://github.com/bengsfort/WakaTime-Unity is obsolete and https://github.com/josec89/wakatime-unity requires Python), so I decided to implement my own variant.
 
-The code has been successfully tested with following Unity versions:
-
-* 2017.4.0f1
-* 2018.1.0b13
-* 2018.1.2f1
-* 2018.3.6f1
-* 2018.3.10f1
-* 2018.3.14f1
-* 2019.1.0f2
-
 ## Installation using the Unity Package Manager (Unity 2018.1+)
 
 The [Unity Package Manager](https://docs.unity3d.com/Packages/com.unity.package-manager-ui@1.8/manual/index.html) (UPM) is a new method to manage external packages. It keeps package contents separate from your main project files.

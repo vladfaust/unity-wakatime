@@ -12,31 +12,10 @@ Existing solutions didn't work for me (https://github.com/bengsfort/WakaTime-Uni
 
 The [Unity Package Manager](https://docs.unity3d.com/Packages/com.unity.package-manager-ui@1.8/manual/index.html) (UPM) is a new method to manage external packages. It keeps package contents separate from your main project files.
 
-1. Modify your project's `Packages/manifest.json` file adding this line:
-
-    ```json
-    "com.vladfaust.unitywakatime": "https://github.com/vladfaust/unity-wakatime.git#package"
-    ```
-
-    Make sure it's still a valid JSON file. For example:
-
-    ```json
-    {
-        "dependencies": {
-            "com.unity.ads": "2.0.8",
-            "com.vladfaust.unitywakatime": "https://github.com/vladfaust/unity-wakatime.git#package"
-        }
-    }
-    ```
-
-2. To update the package you need to delete the package lock entry in the `lock` section in `Packages/manifest.json`. The entry to delete could look like this:
-
-    ```json
-    "com.vladfaust.unitywakatime": {
-      "hash": "31fe84232fc9f9c6e9606dc9e5a285886a94f26b",
-      "revision": "package"
-    }
-    ```
+1. Run the Unity editor, go to `Assets\View in Package Manager`.
+2. Click the `+` icon. (top left of window that opened)
+3. Click `Add package from git url`.
+4. Type `https://github.com/vladfaust/unity-wakatime.git#package`.
 
 ## Installation (all other Unity versions)
 

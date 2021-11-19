@@ -150,6 +150,7 @@ namespace WakaTime {
           if (request.downloadHandler.text == string.Empty) {
             Debug.LogWarning(
               "<WakaTime> Network is unreachable. Consider disabling completely if you're working offline");
+            request.Dispose();
             return;
           }
 
@@ -173,6 +174,8 @@ namespace WakaTime {
             if (_debug) Debug.Log("<WakaTime> Sent heartbeat!");
             _lastHeartbeat = response.data;
           }
+
+          request.Dispose();
         };
     }
 
